@@ -31,9 +31,7 @@ void GameRun(PLAYERINFO* player) {
 		exit(1);
 	}
 
-	while (gameOver!=1) {
-		DrawConsole(player);
-	}
+	DrawConsole(player);
 
 	GameOver(player);
 }
@@ -69,16 +67,20 @@ int Signin(SOCKET* client, PLAYERINFO* player) {
 	char password[MAX];
 	char nickName[32];
 	int result = 0;
-
+	
 	do {
-		Clear();
+		SetMyCursor(TRUE);	//커서 온
 
-		printf("아이디: ");	gets_s(id, sizeof(id));
-		printf("비밀번호: "); Input_password(password);
-		printf("\n");
-		printf("닉네임: "); gets_s(nickName, sizeof(id));
+		DrawSigninWindow();	//회원가입 화면 출력
 
-		strcat(message, "signin/");
+		GotoXY(18, 22);		gets_s(id, sizeof(id));			//아이디 입력
+		GotoXY(18, 24);		Input_password(password);		//비밀번호 입력
+		GotoXY(18, 26);		gets_s(nickName, sizeof(id));	//닉네임 입력
+		
+		SetMyCursor(FALSE);	//커서 오프
+
+		//message => signin/id/password/nickName
+		strcpy(message, "signin/");
 		strcat(message, id);
 		strcat(message, "/");
 		strcat(message, password);
@@ -100,17 +102,22 @@ int Signin(SOCKET* client, PLAYERINFO* player) {
 		message[result] = '\0';
 
 		if (strcmp(message, "no_id") == 0) {
-			printf("중복되는 아이디가 있습니다.\n");
+			GotoXY(3, 28);	printf("   중복되는 아이디가 있습니다   ");
+			GotoXY(3, 29);	printf("ESC키를 누르고 다시 입력하십시오.");
+			while (GetKey()!=ESC);
 		}
 		else if (strcmp(message, "no_nickname") == 0) {
-			printf("중복되는 닉네임이 있습니다.\n");
+			GotoXY(3, 28);	printf("   중복되는 닉네임이 있습니다.   ");
+			GotoXY(3, 29);	printf("ESC키를 누르고 다시 입력하십시오.");
+			while (GetKey()!=ESC);
 		}
 
-	} while (strcmp(message,"welcome")!=0);
+	} while (strcmp(message, "welcome") != 0);
 
 	strcpy(player->name, nickName);
-	printf("환영합니다. %s 님\n", player->name);
-	GetKey();
+	GotoXY(3, 28);	printf("  환영합니다. %s 님", player->name);
+	GotoXY(5, 29);	printf("ENTER키를 누르면 입장합니다.");
+	while (GetKey() != ENTER);
 
 	return 0;
 }
@@ -124,12 +131,16 @@ int Login(SOCKET* client, PLAYERINFO* player) {
 	int result = 0;
 
 	do {
-		Clear();
+		SetMyCursor(TRUE);	//커서 온
+		DrawLoginWindow(); //로그인 화면 출력
 
-		printf("아이디: ");	gets_s(id, sizeof(id));
-		printf("비밀번호: "); Input_password(password);
+		GotoXY(18, 22);	gets_s(id, sizeof(id));
+		GotoXY(18, 24); Input_password(password);
 
-		strcat(message, "login/");
+		SetMyCursor(FALSE);	//커서 오프
+
+		// message => login/id/password
+		strcpy(message, "login/");
 		strcat(message, id);
 		strcat(message, "/");
 		strcat(message, password);
@@ -148,10 +159,14 @@ int Login(SOCKET* client, PLAYERINFO* player) {
 		message[result] = '\0';
 
 		if (strcmp(message, "no_id") == 0) {
-			printf("\n존재하지 않는 아이디 입니다.\n");
+			GotoXY(3, 26);	printf("   존재하지 않는 아이디 입니다.  \n");
+			GotoXY(3, 27);	printf("ESC키를 누르고 다시 입력하십시오.\n");
+			while (GetKey() != ESC);
 		}
 		else if (result = strcmp(message, "no_password") == 0) {
-			printf("\n비밀번호 가 틀렸습니다.\n");
+			GotoXY(3, 26);	printf("    비밀번호 가 틀렸습니다.      \n");
+			GotoXY(3, 27);	printf("ESC키를 누르고 다시 입력하십시오.\n");
+			while (GetKey() != ESC);
 		}
 		else
 			break;
@@ -165,8 +180,9 @@ int Login(SOCKET* client, PLAYERINFO* player) {
 	tok = strtok(NULL, "/");
 	if (tok != NULL) player->maxScore = atoi(tok);
 
-	printf("\n어서오세요 %s 님\n", player->name);
-	Sleep(1500);
+	GotoXY(5, 26); printf("   어서오세요 %s 님\n", player->name);
+	GotoXY(5, 27); printf("ENTER키를 누르면 입장합니다.");
+	while (GetKey() != ENTER);
 
 	return 0;
 }
@@ -235,7 +251,7 @@ int SendScore(SOCKET* client, PLAYERINFO* player) {
 	strcat(message, player->name);
 	strcat(message, "/");
 	sprintf(maxScore, "%d", player->maxScore);
-	strcat(message,maxScore);
+	strcat(message, maxScore);
 
 	//정보 요청
 	result = send(*client, message, strlen(message), 0);
@@ -295,13 +311,13 @@ int Input_password(char* password) {
 
 //부딪힐때
 void Hit(int whatStar, PLAYERINFO* player) {
-	
+
 	switch (whatStar) {
 	case STAR:
-		Beep(_A,100);
+		Beep(_A, 100);
 		if (player->strong == 1)	player->strong -= 1; //무적이라면 피해 x
 		else player->hp -= 1;	//무적이 아니라면 HP -1
-		if (player->hp <= 0)	gameOver=1;	//HP 가 0 이 되면 게임 오버
+		if (player->hp <= 0)	gameOver = 1;	//HP 가 0 이 되면 게임 오버
 		break;
 
 	case HEALINGSTAR:

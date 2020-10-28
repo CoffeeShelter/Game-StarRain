@@ -3,6 +3,7 @@
 void DrawGameDIsplay_(PLAYERINFO* player);	//게임판 출력
 void DrawState_(PLAYERINFO* player); //상태창 출력
 
+//게임 창
 void DrawGameDIsplay_(PLAYERINFO* player) {
 
 	int col, line;
@@ -72,6 +73,7 @@ void DrawGameDIsplay_(PLAYERINFO* player) {
 	}
 }
 
+//게임 상태창
 void DrawState_(PLAYERINFO* player) {
 
 	int col, line;
@@ -226,7 +228,7 @@ void PrintingExplanation() {
 	while (GetKey() != ESC);
 }
 
-//화면 출력
+//게임 화면 전체 출력
 void DrawConsole(PLAYERINFO* player) {
 	clock_t curTime, oldTime;
 
@@ -241,4 +243,29 @@ void DrawConsole(PLAYERINFO* player) {
 			curTime = clock();
 		}
 	}
+}
+
+// 22,24 . y
+
+//로그인 창 출력
+void DrawLoginWindow() {
+	Clear();	//화면 지움
+	DrawIntro();	//StarGame 이미지 출력
+	GotoXY(7, 22);
+	printf(" 로그인 :");
+	GotoXY(7, 24);
+	printf("비밀번호 :");
+}
+
+//회원가입 창 출력
+void DrawSigninWindow() {
+	Clear();	//화면 지움
+	DrawIntro();	//StarGame 이미지 출력
+	GotoXY(7, 22);
+	printf(" 로그인 :");
+	GotoXY(7, 24);
+	printf("비밀번호 :");
+	GotoXY(7, 26);
+	printf(" 닉네임 :");
+
 }

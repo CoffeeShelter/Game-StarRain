@@ -11,6 +11,7 @@ int LoginMenu() {
 	char key = 0;
 	int choice = LOGIN;
 
+	SetMyCursor(FALSE);	//커서 오프
 	Clear();
 	DrawIntro();	//인트로 화면 출력
 
@@ -75,6 +76,7 @@ int Menu() {
 	char key = 0;
 	int choice = GAMESTART;
 
+	SetMyCursor(FALSE);	//커서 오프
 	Clear();
 	DrawIntro();	//인트로 화면 출력
 

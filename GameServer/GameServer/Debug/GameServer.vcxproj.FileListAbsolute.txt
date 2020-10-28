@@ -1,1 +1,2 @@
 C:\MyCprogram\GameServer\GameServer\Debug\GameServer.vcxproj.CopyComplete
+C:\MyCprogram\Game-StarRain\GameServer\GameServer\Debug\GameServer.vcxproj.CopyComplete

@@ -12,7 +12,7 @@ void main(void) {
 		printf("서버가 닫혀 있습니다.\n");
 		return;
 	}
-
+	closesocket(client);
 	int select = 0;
 	int result = 0;
 	do {
@@ -31,6 +31,7 @@ void main(void) {
 	if (select == GAMEEXIT) {
 		send(client, "exit", sizeof("exit"), 0);
 		printf("종료합니다.\n");
+		closesocket(client);
 		return;
 	}
 
@@ -55,6 +56,7 @@ void main(void) {
 		send(client, "exit", sizeof("exit"), 0);
 		printf("종료합니다.\n");
 		free(player);
+		closesocket(client);
 		return;
 	}
 }

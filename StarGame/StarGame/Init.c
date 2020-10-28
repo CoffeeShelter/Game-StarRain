@@ -6,13 +6,12 @@ void Init() {
 
 	SetConsoleTitle(TEXT("StarGame"));	//콘솔 창 제목
 	SetConsoleSize(CONSOLESIZE_COL, CONSOLESIZE_LINES);	//콘솔 창 사이즈 변경
-	SetMyCursor(FALSE);	//커서 오프
-
 	srand((unsigned)time(NULL)); //난수를 위한 시드 생성
 
 }
 
 void GameInit(PLAYERINFO* player) {
+	SetMyCursor(FALSE);	//커서 오프
 	player->x = (int)GAMEBOARD_COL / 2;
 	player->y = GAMEBOARD_LINES - 1;
 	player->hp = MAX_HP;

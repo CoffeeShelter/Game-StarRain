@@ -114,6 +114,8 @@ void GameOver(PLAYERINFO* player); //게임 오버
 void DrawIntro();	//인트로 출력
 void PrintingExplanation();	//설명 출력
 void DrawConsole(PLAYERINFO* player); //게임 화면 출력
+void DrawLoginWindow();	//로그인 화면 출력
+void DrawSigninWindow();	//회원가입 화면 출력
 
 //Menu.c
 int LoginMenu();	//로그인 메뉴	( 로그인, 회원가입 )
