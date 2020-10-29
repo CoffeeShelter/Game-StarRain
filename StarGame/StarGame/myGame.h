@@ -1,4 +1,5 @@
 #pragma once
+
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib, "ws2_32.lib")
 
@@ -13,8 +14,11 @@
 #include <Windows.h>
 #include <pthread.h>
 #include <mmsystem.h>
+#include <SDL.h>
+#include <SDL_mixer.h>
 
 #pragma warning(disable:4996)
+
 
 // < 사용 매크로 >
 
@@ -48,10 +52,19 @@
 #define SIGNIN 24
 
 //게임 정보
-#define MAX_HP 1 //최대 hp
+#define MAX_HP 10 //최대 hp
 #define MAX_BOOST 10 //최대 부스트 횟수
 
 // < 사용 변수 >
+
+//소리
+typedef struct _GAME_SOUND {
+	Mix_Music* BGM;
+	Mix_Chunk* GET_ITEM_SOUND;
+	Mix_Chunk* HIT_SOUND;
+}GAME_SOUND;
+
+GAME_SOUND sound;
 
 //게임판 값
 //공백, 플레이어, 별똥별(기본,치유,부스트,무적,즉사)
@@ -96,7 +109,8 @@ void SetColor(unsigned char _BgColor, unsigned char _TextColor); //배경, 글자색 
 void Clear(void); //화면 지우기
 
 //Init.c
-void Init();	//초기화
+int Init();	//초기화
+int Sound_init();	//SDL_mixer 초기화
 void GameInit(PLAYERINFO* player);	//게임 초기화
 
 //GameManager.c
@@ -126,3 +140,6 @@ void* StarLogic(void* data);	//별똥별
 
 //Player.c
 void* PlayerMove(void* data); //플레이어 움직임
+
+//Release.c
+int Release_Sound();	//SDL_mixer 자원 해제

@@ -17,6 +17,8 @@ void GameRun(PLAYERINFO* player) {
 
 	GameInit(player);
 
+	Mix_PlayMusic(sound.BGM, -1);	//배경음 재생
+
 	//움직이는 함수 쓰레드
 	threadResult = pthread_create(&myThread[0], NULL, StarLogic, (void*)player);
 	if (threadResult < 0) {
@@ -32,6 +34,8 @@ void GameRun(PLAYERINFO* player) {
 	}
 
 	DrawConsole(player);
+
+	Mix_HaltMusic();	//배경음 중지
 
 	GameOver(player);
 }
@@ -67,7 +71,7 @@ int Signin(SOCKET* client, PLAYERINFO* player) {
 	char password[MAX];
 	char nickName[32];
 	int result = 0;
-	
+
 	do {
 		SetMyCursor(TRUE);	//커서 온
 
@@ -76,7 +80,7 @@ int Signin(SOCKET* client, PLAYERINFO* player) {
 		GotoXY(18, 22);		gets_s(id, sizeof(id));			//아이디 입력
 		GotoXY(18, 24);		Input_password(password);		//비밀번호 입력
 		GotoXY(18, 26);		gets_s(nickName, sizeof(id));	//닉네임 입력
-		
+
 		SetMyCursor(FALSE);	//커서 오프
 
 		//message => signin/id/password/nickName
@@ -104,12 +108,12 @@ int Signin(SOCKET* client, PLAYERINFO* player) {
 		if (strcmp(message, "no_id") == 0) {
 			GotoXY(3, 28);	printf("   중복되는 아이디가 있습니다   ");
 			GotoXY(3, 29);	printf("ESC키를 누르고 다시 입력하십시오.");
-			while (GetKey()!=ESC);
+			while (GetKey() != ESC);
 		}
 		else if (strcmp(message, "no_nickname") == 0) {
 			GotoXY(3, 28);	printf("   중복되는 닉네임이 있습니다.   ");
 			GotoXY(3, 29);	printf("ESC키를 누르고 다시 입력하십시오.");
-			while (GetKey()!=ESC);
+			while (GetKey() != ESC);
 		}
 
 	} while (strcmp(message, "welcome") != 0);
@@ -314,29 +318,29 @@ void Hit(int whatStar, PLAYERINFO* player) {
 
 	switch (whatStar) {
 	case STAR:
-		Beep(_A, 100);
+		Mix_PlayChannel(-1, sound.HIT_SOUND, 0);	//사운드 재생
 		if (player->strong == 1)	player->strong -= 1; //무적이라면 피해 x
 		else player->hp -= 1;	//무적이 아니라면 HP -1
 		if (player->hp <= 0)	gameOver = 1;	//HP 가 0 이 되면 게임 오버
 		break;
 
 	case HEALINGSTAR:
-		Beep(_C, 100);
+		Mix_PlayChannel(-1, sound.GET_ITEM_SOUND, 0);	//사운드 재생
 		if (player->hp < MAX_HP)	player->hp += 1;	//치유별: 목숨 증가
 		break;
 
 	case FASTSTAR:
-		Beep(_C, 100);
+		Mix_PlayChannel(-1, sound.GET_ITEM_SOUND, 0);
 		if (player->boost < MAX_BOOST) player->boost += 1; //빨리빨리 별: 부스트 증가
 		break;
 
 	case STRONGSTAR:
-		Beep(_C, 100);
+		Mix_PlayChannel(-1, sound.GET_ITEM_SOUND, 0);	//사운드 재생
 		player->strong = 1;//튼튼 별: 무적 부여
 		break;
 
 	case DEATHSTAR:
-		Beep(_A, 100);
+		Mix_PlayChannel(-1, sound.HIT_SOUND, 0);
 		if (player->strong == 1) player->strong -= 1; //무적이라면 피해 x
 		else gameOver = 1; //즉사 별똥별은 HP 상관없이 게임오버
 		break;
@@ -382,12 +386,7 @@ void GameOver(PLAYERINFO* player) {
 		fclose(file);
 	}
 
-	while (!(_kbhit())) {
-		GotoXY(2, (int)CONSOLESIZE_LINES / 2 + 2);
-		printf("계속 하시려면 아무키나 누르세요.");
-		Sleep(700);
-		GotoXY(2, (int)CONSOLESIZE_LINES / 2 + 2);
-		printf("                                ");
-		Sleep(500);
-	}
+	GotoXY(2, (int)CONSOLESIZE_LINES / 2 + 2);	printf("ESC 누르면 메뉴창으로 돌아갑니다.");
+
+	while (GetKey()!=ESC);
 }
