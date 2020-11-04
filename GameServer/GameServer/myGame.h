@@ -36,7 +36,7 @@ struct acceptData {
 //Client쓰레드 매개 변수
 struct clientData {
 	Users* head;
-	SOCKET* client;
+	SOCKET client;
 };
 
 //Server.c

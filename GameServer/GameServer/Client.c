@@ -7,7 +7,7 @@ int Process(SOCKET* client, char* msg, Users* head); //클라이언트 로부터 받은 요
 // 클라이언트 쓰레드
 void* Client(void* data) {
 	struct clientData* threadData = (struct clientData*)data;
-	SOCKET* client = threadData->client;
+	SOCKET client = threadData->client;
 	Users* head = threadData->head;
 
 	char msg[MSG_SIZE];	//수신 받을 메세지 변수
@@ -15,22 +15,23 @@ void* Client(void* data) {
 
 	while (1) {
 		//요구사항 받기
-		result = recv(*client, msg, sizeof(msg) - 1, 0); //끝에 null을 포함 하지 않음.
+		result = recv(client, msg, sizeof(msg) - 1, 0); //끝에 null을 포함 하지 않음.
 		if (result == SOCKET_ERROR) {
 			printf("에러코드 %d\n", WSAGetLastError());
-			closesocket(*client);
+			closesocket(client);
 			printf("클라이언트 소켓 해제\n");
 			return NULL;
 		}
 		msg[result] = '\0'; //끝 부분에 null 문자 추가.
 
-		result = Process(client, msg, head);	//요구사항 처리
+		//요구사항 처리 종료 요구 또는 에러 시 -1 반환, 정상처리 시 0반환
+		result = Process(&client, msg, head);
 		if (result != 0) break;
 
 	}
 
 	printf("클라이언트 쓰레드 종료\n");
-	closesocket(*client);
+	closesocket(client);
 	return NULL;
 }
 

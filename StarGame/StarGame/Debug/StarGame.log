@@ -1,12 +1,2 @@
-﻿  Client.c
-  DrawWindow.c
-  GameManager.c
-  Init.c
-  Main.c
-  Menu.c
-  Player.c
-  Release.c
-  SimpleWindow.c
-  Star.c
-  코드를 생성하고 있습니다...
+﻿  Main.c
   StarGame.vcxproj -> C:\MyCprogram\Game-StarRain\StarGame\Debug\StarGame.exe

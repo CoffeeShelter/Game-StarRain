@@ -19,7 +19,7 @@ void* Accept(void* acceptData) {
 		}
 		printf("클라이언트 연결 성공(%s)\n", inet_ntoa(clientAddr.sin_addr));
 		//클라이언트 쓰레드 실행
-		clntData.client = &client;
+		clntData.client = client;
 		pthread_create(&clientThread, NULL, Client, (void*)&clntData);
 		pthread_detach(clientThread);	//쓰레드 분리
 	}
