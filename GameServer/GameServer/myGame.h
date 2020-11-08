@@ -13,6 +13,8 @@
 #include <conio.h>
 #include <pthread.h>
 
+#define PASSWORD_KEY 1004
+
 //유저 정보
 typedef struct userInfo {
 	char id[16];

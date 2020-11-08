@@ -3,6 +3,8 @@
 #define MSG_SIZE 1024
 
 int Process(SOCKET* client, char* msg, Users* head); //클라이언트 로부터 받은 요구사항 처리 함수
+void strToArray(char* pStr, int pStr_len, char aStr[]); //포인터 문자열을 배열 문자열로 변환
+void encoding(char* str, int key); //비밀번호 암호화
 
 // 클라이언트 쓰레드
 void* Client(void* data) {
@@ -47,9 +49,14 @@ int Process(SOCKET* client, char* msg, Users* head) {
 	//로그인
 	//	login/<아이디>/<비밀번호>
 	if (strcmp(command, "login") == 0) {
+
 		Users* user = NULL;
 		char* id = strtok(NULL, "/");
 		char* password = strtok(NULL, "/");
+
+		char arrPassword[32]; //비밀번호를 담을 문자열 배열
+		strToArray(password, (int)strlen(password), arrPassword);	//포인터형 문자열을 배열형 문자열로 변환
+		encoding(arrPassword, PASSWORD_KEY);	//암호화
 
 		user = FindUser_ID(head, id);
 		if (user == NULL) {
@@ -61,7 +68,7 @@ int Process(SOCKET* client, char* msg, Users* head) {
 			return 0;
 		}
 
-		if (strcmp(user->data.password, password) != 0) {
+		if (strcmp(user->data.password, arrPassword) != 0) {
 			result = send(*client, "no_password", strlen("no_password"), 0);
 			if (result == SOCKET_ERROR) {
 				printf("에러코드 %d\n", WSAGetLastError());
@@ -94,8 +101,12 @@ int Process(SOCKET* client, char* msg, Users* head) {
 		char* id = strtok(NULL, "/");
 		char* password = strtok(NULL, "/");
 		char* nickName = strtok(NULL, "/");
+		char arrPassword[32]; //비밀번호를 담을 문자열 배열
 		Users* user = NULL;
 		int result = 0;
+
+		strToArray(password, (int)strlen(password), arrPassword);	//포인터형 문자열을 배열형 문자열로 변환
+		encoding(arrPassword, PASSWORD_KEY);	//암호화
 
 		user = FindUser_ID(head, id);
 		//중복되는 아이디가 있는 경우
@@ -131,11 +142,11 @@ int Process(SOCKET* client, char* msg, Users* head) {
 			}
 			Info userInfo;
 			strcpy(userInfo.id, id);
-			strcpy(userInfo.password, password);
+			strcpy(userInfo.password, arrPassword);
 			strcpy(userInfo.name, nickName);
 			userInfo.score = 0;
 			AddUser(head, userInfo);
-			printf("%s 님 정보 추가 완료\n",userInfo.name);
+			printf("%s 님 정보 추가 완료\n", userInfo.name);
 		}
 	}
 
@@ -205,4 +216,20 @@ int Process(SOCKET* client, char* msg, Users* head) {
 	}
 
 	return 0;
+}
+
+//포인터 문자열을 배열 문자열로 변환
+void strToArray(char* pStr, int pStr_len, char aStr[]) {
+	int i = 0;
+	for (i = 0; i < pStr_len; i++) {
+		aStr[i] = pStr[i];
+	}
+	aStr[i] = '\0';
+}
+
+//문자열 암호화
+void encoding(char* str, int key) {
+	for (int i = 0; i < (int)strlen(str); i++) {
+		str[i] = str[i] ^ key;
+	}
 }

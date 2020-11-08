@@ -26,3 +26,4 @@ vv 123 vMan 4
 ww 123 wMan 3
 xx 123 xMan 2
 gameMan 123 gameMan 0
+Cola İİİ ColaMan 0
