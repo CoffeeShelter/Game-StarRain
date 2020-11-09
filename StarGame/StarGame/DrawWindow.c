@@ -255,17 +255,21 @@ void DrawLoginWindow() {
 	printf(" 로그인 :");
 	GotoXY(7, 24);
 	printf("비밀번호 :");
+	GotoXY(0, 29);
+	printf("뒤로가기 ESC");
 }
 
 //회원가입 창 출력
 void DrawSigninWindow() {
 	Clear();	//화면 지움
 	DrawIntro();	//StarGame 이미지 출력
+	GotoXY(7, 20);
+	printf(" 아이디 :");
 	GotoXY(7, 22);
-	printf(" 로그인 :");
-	GotoXY(7, 24);
 	printf("비밀번호 :");
-	GotoXY(7, 26);
+	GotoXY(7, 24);
 	printf(" 닉네임 :");
+	GotoXY(0, 29);
+	printf("뒤로가기 ESC");
 
 }

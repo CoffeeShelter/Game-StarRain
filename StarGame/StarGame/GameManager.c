@@ -10,6 +10,7 @@
 #define _B (DWORD)1975.533
 
 int Input_password(char* password);	//비밀번호 입력 (* 로 표시)
+int Input_str(char* str); //문자열 입력 .. ESC키 누를시 해당 키 반환
 
 void GameRun(PLAYERINFO* player) {
 	pthread_t myThread[2];
@@ -69,7 +70,7 @@ int Signin(SOCKET* client, PLAYERINFO* player) {
 	char message[1024] = { '\0' };
 	char id[MAX];
 	char password[MAX];
-	char nickName[32];
+	char nickName[MAX];
 	int result = 0;
 
 	do {
@@ -77,9 +78,9 @@ int Signin(SOCKET* client, PLAYERINFO* player) {
 
 		DrawSigninWindow();	//회원가입 화면 출력
 
-		GotoXY(18, 22);		gets_s(id, sizeof(id));			//아이디 입력
-		GotoXY(18, 24);		Input_password(password);		//비밀번호 입력
-		GotoXY(18, 26);		gets_s(nickName, sizeof(id));	//닉네임 입력
+		GotoXY(18, 20);		if (Input_str(id) == ESC) return ESC;			//아이디 입력
+		GotoXY(18, 22);		if (Input_password(password) == ESC) return ESC;;		//비밀번호 입력
+		GotoXY(18, 24);		if (Input_str(nickName) == ESC) return ESC;	//닉네임 입력
 
 		SetMyCursor(FALSE);	//커서 오프
 
@@ -106,21 +107,21 @@ int Signin(SOCKET* client, PLAYERINFO* player) {
 		message[result] = '\0';
 
 		if (strcmp(message, "no_id") == 0) {
-			GotoXY(3, 28);	printf("   중복되는 아이디가 있습니다   ");
-			GotoXY(3, 29);	printf("ESC키를 누르고 다시 입력하십시오.");
+			GotoXY(3, 26);	printf("   중복되는 아이디가 있습니다   ");
+			GotoXY(3, 27);	printf("ESC키를 누르고 다시 입력하십시오.");
 			while (GetKey() != ESC);
 		}
 		else if (strcmp(message, "no_nickname") == 0) {
-			GotoXY(3, 28);	printf("   중복되는 닉네임이 있습니다.   ");
-			GotoXY(3, 29);	printf("ESC키를 누르고 다시 입력하십시오.");
+			GotoXY(3, 26);	printf("   중복되는 닉네임이 있습니다.   ");
+			GotoXY(3, 27);	printf("ESC키를 누르고 다시 입력하십시오.");
 			while (GetKey() != ESC);
 		}
 
 	} while (strcmp(message, "welcome") != 0);
 
 	strcpy(player->name, nickName);
-	GotoXY(3, 28);	printf("  환영합니다. %s 님", player->name);
-	GotoXY(5, 29);	printf("ENTER키를 누르면 입장합니다.");
+	GotoXY(3, 26);	printf("  환영합니다. %s 님", player->name);
+	GotoXY(5, 27);	printf("ENTER키를 누르면 입장합니다.");
 	while (GetKey() != ENTER);
 
 	return 0;
@@ -138,8 +139,9 @@ int Login(SOCKET* client, PLAYERINFO* player) {
 		SetMyCursor(TRUE);	//커서 온
 		DrawLoginWindow(); //로그인 화면 출력
 
-		GotoXY(18, 22);	gets_s(id, sizeof(id));
-		GotoXY(18, 24); Input_password(password);
+		//아이디, 비밀번호 입력 => ESC키 누를시 전 메뉴 화면으로 이동
+		GotoXY(18, 22);	if (Input_str(id) == ESC) return ESC;
+		GotoXY(18, 24); if (Input_password(password) == ESC) return ESC;
 
 		SetMyCursor(FALSE);	//커서 오프
 
@@ -221,15 +223,25 @@ int Ranking(SOCKET* client, PLAYERINFO* player) {
 	char name[32];
 	char score[32];
 	char rank[32];
+
+	int x = 5, y = 2;	//화면 좌표
+
 	while (1) {
 		strcpy(name, tok);
 		tok = strtok(NULL, "/");
 		strcpy(score, tok);
 		tok = strtok(NULL, "/");
 
-		printf("< %2d등 > %s\t\t%s점\n", count, name, score);
+		if (count == 1) SetColor(0, 6);
+		else SetColor(0, 15);
+
+		GotoXY(x, y);		printf("%d등", count++);
+		GotoXY(x + 5, y);		printf("%s", name);
+		GotoXY(x + 20, y);	printf("%s점", score);
+
+		y += 2;
+
 		if (strcmp(tok, "myRank") == 0) break;
-		count += 1;
 	}
 
 	tok = strtok(NULL, "/");
@@ -237,7 +249,10 @@ int Ranking(SOCKET* client, PLAYERINFO* player) {
 	tok = strtok(NULL, "/");
 	strcpy(rank, tok);	//내 등수
 
+	GotoXY(x, y);
+	SetColor(0, 9);
 	printf("나의 점수는 %s점 %s등 입니다.\n", score, rank);
+	SetColor(0, 15);
 
 	while (1) { if (GetKey() == ESC) break; }
 
@@ -290,7 +305,7 @@ int Input_password(char* password) {
 			break;
 
 		case ESC:
-			return -1;
+			return ESC;
 			break;
 		default:
 			//소문자 a~z , 대문자 A~Z , 숫자 1~9 입력 가능.
@@ -312,6 +327,53 @@ int Input_password(char* password) {
 	}
 
 }
+
+// 아이디 입력 함수
+// * 문자로 표시
+int Input_str(char* str) {
+	char key;	//키보드 키
+	int index = 0;	//배열 위치 값
+
+	while (1) {
+		key = _getch();
+
+		switch (key) {
+		case ENTER:
+			return index;
+			break;
+
+		case BACKSPACE:
+			if (index > 0) {
+				index--;
+				str[index] = '\0';
+				printf("\b \b");
+			}
+			break;
+
+		case ESC:
+			return ESC;
+			break;
+		default:
+			//소문자 a~z , 대문자 A~Z , 숫자 1~9 입력 가능.
+			//특수문자 입력 불가
+			if ((key >= 'a' && key <= 'z') ||
+				(key >= 'A' && key <= 'Z') ||
+				(key >= '1' && key <= '9'))
+			{
+				if (index < MAX - 2) {
+					str[index] = key;
+					str[index + 1] = '\0';
+					index++;
+					printf("%c", key);
+				}
+			}
+
+			break;
+		}
+	}
+
+}
+
 
 //부딪힐때
 void Hit(int whatStar, PLAYERINFO* player) {
@@ -388,5 +450,5 @@ void GameOver(PLAYERINFO* player) {
 
 	GotoXY(2, (int)CONSOLESIZE_LINES / 2 + 2);	printf("ESC 누르면 메뉴창으로 돌아갑니다.");
 
-	while (GetKey()!=ESC);
+	while (GetKey() != ESC);
 }
