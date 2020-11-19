@@ -121,7 +121,40 @@ void S_Process(char* msg, Users* head) {
 	}
 	//유저 삭제
 	else if (strcmp(command, "del") == 0) {
-
+		command = strtok(NULL, " ");
+		if (command == NULL) {
+			printf("삭제할 유저의 닉네임을 입력해주세요.\n");
+			printf("ex >> del [닉네임]\n");
+		}
+		else {
+			user = FindUser(head, command);
+			if (user == NULL) {
+				printf("해당 닉네임의 유저가 존재하지 않습니다.\n");
+			}
+			else {
+				printf("유저 [ %s ] 를 정말 삭제하시겠습니가?\n",user->data.name);
+				printf("[YES] : Y ,[NO] : N\n");
+				
+				char select = '\0';
+				while (!(select == 'y' || select == 'n'))
+					select = _getch();
+				switch (select) {
+				case 'y': {
+					DelUser(head, user->data.name);
+					printf("해당 유저를 삭제하였습니다.\n");
+					break;
+				}
+				case 'n': {
+					printf("취소되었습니다.\n");
+					break;
+				}
+				default: {
+					printf("잘못 누르셨습니다.\n Y, N 둘중 하나를 입력하여주십시오.\n");
+					break;
+				}
+				}
+			}
+		}
 	}
 	//화면 지움
 	else if (strcmp(command, "clear") == 0 || strcmp(command, "cls") == 0) {
