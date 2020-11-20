@@ -13,7 +13,7 @@
 #include <conio.h>
 #include <pthread.h>
 
-#define PASSWORD_KEY 1004
+#define PASSWORD_KEY 7
 
 //유저 정보
 typedef struct userInfo {
