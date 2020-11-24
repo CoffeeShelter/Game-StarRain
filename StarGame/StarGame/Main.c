@@ -40,6 +40,7 @@ int main(int argc, char* argv[]) {
 		Release_Sound();	//SDL_mixer 해제
 		free(player);
 		closesocket(client);
+		DeleteBuffer();
 		return 0;
 	}
 
@@ -69,6 +70,7 @@ int main(int argc, char* argv[]) {
 		Release_Sound();	//SDL_mixer 해제
 		free(player);
 		closesocket(client);
+		DeleteBuffer();
 		return 0;
 	}
 

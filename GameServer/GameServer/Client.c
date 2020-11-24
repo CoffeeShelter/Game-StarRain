@@ -3,8 +3,6 @@
 #define MSG_SIZE 1024
 
 int Process(SOCKET* client, char* msg, Users* head); //클라이언트 로부터 받은 요구사항 처리 함수
-void strToArray(char* pStr, int pStr_len, char aStr[]); //포인터 문자열을 배열 문자열로 변환
-void encoding(char* str, int key); //비밀번호 암호화
 
 // 클라이언트 쓰레드
 void* Client(void* data) {

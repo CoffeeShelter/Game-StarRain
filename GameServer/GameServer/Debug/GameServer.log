@@ -1,7 +1,2 @@
-﻿  Accept.c
-  Client.c
-  Server.c
-  UserData.c
-  main.c
-  코드를 생성하고 있습니다...
+﻿  Server.c
   GameServer.vcxproj -> C:\MyCprogram\Game-StarRain\GameServer\Debug\GameServer.exe

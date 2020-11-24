@@ -60,3 +60,6 @@ int FindUser_RANKING(Users* head, char* nickName);	//유저 랭킹 확인
 void PrintUser(Users* head);	//유저 출력
 void PrintUser_FILE(FILE* file, Users* head);	//유저 파일에 저장
 void FreeList(Users* head);	//유저 리스트 해제
+
+void strToArray(char* pStr, int pStr_len, char aStr[]); //포인터 문자열을 배열 문자열로 변환
+void encoding(char* str, int key); //비밀번호 암호화

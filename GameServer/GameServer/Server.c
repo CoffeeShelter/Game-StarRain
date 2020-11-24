@@ -119,6 +119,62 @@ void S_Process(char* msg, Users* head) {
 				printf("해당 닉네임의 유저가 존재하지 않습니다.\n");
 		}
 	}
+	// 유저 추가
+	else if (strcmp(command, "add") == 0) {
+		command = strtok(NULL, " ");
+		if (command == NULL) {
+			printf("[유저 추가 명령어]\n");
+			printf(">> add [아이디] [비밀번호] [닉네임]\n");
+
+			return;
+		}
+		else {
+			char* id;
+			char* password;
+			char* nickName;
+
+			id = command;
+			password = strtok(NULL," ");
+			nickName = strtok(NULL," ");
+
+			if ((id == NULL) || (password == NULL) || (nickName == NULL)) {
+				printf("잘못 입력하셨습니다.\n");
+				printf("[유저 추가 명령어]\n");
+				printf(">> add [아이디] [비밀번호] [닉네임]\n");
+
+				return;
+			}
+			else {
+				Users* newUser;
+				Info newInfo;
+
+				newUser = FindUser_ID(head, id);
+				if (newUser != NULL) {
+					printf("중복 되는 아이디 입니다.\n");
+					return;
+				}
+				newUser = FindUser(head, nickName);
+				if (newUser != NULL) {
+					printf("중복 되는 닉네임 입니다.\n");
+					return;
+				}
+
+				char temp[32];
+
+				strToArray(password, strlen(password), temp);	// 포인터 문자열을 배열형 문자열로 변환
+				encoding(temp, PASSWORD_KEY);
+
+				strcpy(newInfo.id, id);
+				strcpy(newInfo.password, temp);
+				strcpy(newInfo.name, nickName);
+				newInfo.score = 0;
+
+				AddUser(head, newInfo);
+
+				printf("[%s] 유저가 추가되었습니다.\n", newInfo.name);
+			}
+		}
+	}
 	//유저 삭제
 	else if (strcmp(command, "del") == 0) {
 		command = strtok(NULL, " ");
@@ -132,9 +188,9 @@ void S_Process(char* msg, Users* head) {
 				printf("해당 닉네임의 유저가 존재하지 않습니다.\n");
 			}
 			else {
-				printf("유저 [ %s ] 를 정말 삭제하시겠습니가?\n",user->data.name);
+				printf("유저 [ %s ] 를 정말 삭제하시겠습니가?\n", user->data.name);
 				printf("[YES] : Y ,[NO] : N\n");
-				
+
 				char select = '\0';
 				while (!(select == 'y' || select == 'n'))
 					select = _getch();

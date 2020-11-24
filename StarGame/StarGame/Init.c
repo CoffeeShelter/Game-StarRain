@@ -6,6 +6,10 @@ int Init() {
 	SetConsoleSize(CONSOLESIZE_COL, CONSOLESIZE_LINES);	//콘솔 창 사이즈 변경
 	srand((unsigned)time(NULL)); //난수를 위한 시드 생성
 
+	nScreenIndex = 0;
+
+	CreatBuffer();
+
 	return 0;
 }
 

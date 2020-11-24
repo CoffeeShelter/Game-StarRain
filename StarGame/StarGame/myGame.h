@@ -57,6 +57,9 @@
 
 // < 사용 변수 >
 
+HANDLE hBuffer[2];
+int nScreenIndex;
+
 //소리
 typedef struct _GAME_SOUND {
 	Mix_Music* BGM;
@@ -107,6 +110,11 @@ void GotoXY(int x, int y); //커서 위치 설정
 void SetMyCursor(BOOL _bShow); //커서 온/오프
 void SetColor(unsigned char _BgColor, unsigned char _TextColor); //배경, 글자색 변경
 void Clear(void); //화면 지우기
+void CreatBuffer();	// 버퍼 생성
+void WriteBuffer(int x, int y, char str[]);	// 버퍼 쓰기
+void FlippingBuffer();	// 스크린 전환
+void ClearBuffer();	// 버퍼 내용 지우기
+void DeleteBuffer();	// 버퍼 해제
 
 //Init.c
 int Init();	//초기화
