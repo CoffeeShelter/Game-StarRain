@@ -1,2 +1,3 @@
 C:\MyCprogram\StarGame\StarGame\Debug\StarGame.vcxproj.CopyComplete
 C:\MyCprogram\Game-StarRain\StarGame\StarGame\Debug\StarGame.vcxproj.CopyComplete
+C:\myCprogram\StarRainGame\Game-StarRain\StarGame\StarGame\Debug\StarGame.vcxproj.CopyComplete
